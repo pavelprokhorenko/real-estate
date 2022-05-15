@@ -1,15 +1,16 @@
 from typing import Generator, Optional
 
-from sqlalchemy.orm import Session
+from databases import Database
 
-from app.db.session import SessionLocalPG
+from app.core.config import settings
 
 
-def get_db_pg() -> Generator:
-    db: Optional[Session] = None
+async def get_db_pg() -> Generator:
+    db: Optional[Database] = None
     try:
-        db = SessionLocalPG()
+        db = Database(settings.POSTGRES_URL)
+        await db.connect()
         yield db
     finally:
         if db is not None:
-            db.close()
+            await db.disconnect()
