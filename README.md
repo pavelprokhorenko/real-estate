@@ -6,6 +6,27 @@
 * [Docker Compose](https://docs.docker.com/compose/install/).
 * [Poetry](https://python-poetry.org/) for Python package and environment management.
 
+## Config
+
+* Create ".env" file and add environment variables to it:
+```dotenv
+SECRET_KEY=local
+PROJECT_NAME=local
+
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_HOST=postgres
+POSTGRES_DB=postgres
+POSTGRES_TEST_DB=test
+PGDATA=/var/lib/postgresql/data/pgdata
+```
+* To generate hex 32 byte secret_key:
+```console
+$ openssl rand -hex 32
+```
+
+* Other project settings (e.g. SMPT) you can see in "app/core/config.py"
+
 ## Development
 
 * Run server with all dependencies:
@@ -36,7 +57,7 @@ $ pytest .
 -> *app*
    -> *api* — layer with logic for processing requests via api
    -> *core* — global things for the project, like settings (`config.py`)
-    -> *db* — database and session initialization
+   -> *db* — database and session initialization
    -> *models* — models in SQLAlchemy terminology (not to be confused with *schemas* in pydantic and business models)
    -> *schemas* — schemes for validating/serializing request/response objects (they are also models in pydantic terminology)
    -> *services* — service layer, all business logic is placed here.
@@ -61,7 +82,7 @@ $ alembic -n postgres upgrade head
 ```
 
 * Postgres
-```
+```console
 $ alembic -n postgres revision --autogenerate -m "text"
 $ alembic -n postgres upgrade head
 $ alembic -n postgres downgrade -1

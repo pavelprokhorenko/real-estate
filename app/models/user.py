@@ -10,9 +10,10 @@ user = sqlalchemy.Table(
     sqlalchemy.Column(
         "email", sqlalchemy_utils.EmailType, unique=True, index=True, nullable=False
     ),
-    sqlalchemy.Column("password", sqlalchemy.String, nullable=False),
-    sqlalchemy.Column("password_salt", sqlalchemy.String, nullable=False),
+    sqlalchemy.Column("hashed_password", sqlalchemy.String, nullable=False),
     sqlalchemy.Column("first_name", sqlalchemy.String, nullable=False),
     sqlalchemy.Column("last_name", sqlalchemy.String, nullable=False),
     sqlalchemy.Column("phone_number", sqlalchemy.String, default=""),
+    sqlalchemy.Column("is_active", sqlalchemy.Boolean, default=True),
+    sqlalchemy.Column("is_superuser", sqlalchemy.Boolean, default=False),
 )
