@@ -11,6 +11,7 @@ user = sqlalchemy.Table(
         "email", sqlalchemy_utils.EmailType, unique=True, index=True, nullable=False
     ),
     sqlalchemy.Column("password", sqlalchemy.String, nullable=False),
+    sqlalchemy.Column("password_salt", sqlalchemy.String, nullable=False),
     sqlalchemy.Column("first_name", sqlalchemy.String, nullable=False),
     sqlalchemy.Column("last_name", sqlalchemy.String, nullable=False),
     sqlalchemy.Column("phone_number", sqlalchemy.String, default=""),
