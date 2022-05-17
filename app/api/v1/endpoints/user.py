@@ -1,9 +1,18 @@
 from typing import Any, List
 
 from databases import Database
-from fastapi import APIRouter, Body, Depends, HTTPException, Path, Query, status
+from fastapi import (
+    APIRouter,
+    BackgroundTasks,
+    Body,
+    Depends,
+    HTTPException,
+    Path,
+    Query,
+    status,
+)
 
-from app import crud, schemas
+from app import crud, schemas, utils
 from app.api.deps import get_db_pg
 
 router = APIRouter()
@@ -25,6 +34,7 @@ async def read_users(
 async def create_user(
     *,
     user: schemas.UserIn = Body(...),
+    background_tasks: BackgroundTasks,
     db: Database = Depends(get_db_pg),
 ) -> Any:
     """
@@ -36,6 +46,11 @@ async def create_user(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="The user with this email already exists.",
         )
+    background_tasks.add_task(
+        utils.send_new_account_email,
+        email_to=user.email,
+        username=f"{user.first_name} {user.last_name}",
+    )
     return await crud.user.create(db, obj_in=user)
 
 
