@@ -11,7 +11,6 @@ class Settings(BaseSettings):
     SECRET_KEY: str
     # 60 minutes * 24 hours * 8 days = 8 days
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
-    ENCODING_ALGORITHM: str = "HS256"
     SERVER_NAME: Optional[str]
     SERVER_HOST: Optional[AnyHttpUrl]
     # BACKEND_CORS_ORIGINS is a JSON-formatted list of origins
