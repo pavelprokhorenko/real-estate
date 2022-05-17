@@ -10,15 +10,21 @@
 
 * Create ".env" file and add environment variables to it:
 ```dotenv
-SECRET_KEY=local
-PROJECT_NAME=local
+# base
+SECRET_KEY=some-secret-key
+PROJECT_NAME=some-project-name
 
+# databases
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=postgres
 POSTGRES_HOST=postgres
 POSTGRES_DB=postgres
 POSTGRES_TEST_DB=test
 PGDATA=/var/lib/postgresql/data/pgdata
+
+# SMTP
+SMTP_USER=some-email
+SMTP_PASSWORD=some-password
 ```
 * To generate hex 32 byte secret_key:
 ```console
