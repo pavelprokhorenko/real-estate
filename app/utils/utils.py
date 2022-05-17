@@ -21,6 +21,9 @@ def send_email(email_to: str, email_subject: str, email_message: str) -> None:
 
 
 def send_new_account_email(email_to: str, username: str) -> None:
+    """
+    Send email to new user.
+    """
     subject = f"{settings.PROJECT_NAME} - new account"
     message = (
         f"You have successfully registered. Congratulations, {username}!\n"

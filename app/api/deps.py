@@ -11,6 +11,9 @@ reusable_oauth2 = OAuth2PasswordBearer(
 
 
 async def get_db_pg() -> Generator:
+    """
+    Connect to database. After response disconnect from database.
+    """
     db: Optional[Database] = None
     try:
         db = Database(settings.POSTGRES_URL)

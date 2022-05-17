@@ -6,7 +6,7 @@ from pydantic import AnyHttpUrl, BaseSettings, PostgresDsn, validator
 
 
 class Settings(BaseSettings):
-    # base
+    # Base
     API_V1_STR: str = "/api/v1"
     SECRET_KEY: str
     # 60 minutes * 24 hours * 8 days = 8 days
@@ -28,11 +28,11 @@ class Settings(BaseSettings):
 
     PROJECT_NAME: str
 
-    # paths
+    # Paths
     BASE_DIR: Path = Path(__file__).absolute().parent.parent
     STATIC_DIR: Path = BASE_DIR / "statics"
 
-    # databases
+    # Databases
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str = ""
     POSTGRES_HOST: str
@@ -81,7 +81,7 @@ class Settings(BaseSettings):
             )
         )
 
-    # email
+    # Email
     SMTP_TLS: bool = True
     SMTP_PORT: int = 587
     SMTP_HOST: str = "smtp.gmail.com"
