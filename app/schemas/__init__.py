@@ -7,4 +7,5 @@ class BaseSchema(BaseModel):
         orm_mode = True
 
 
+from .token import *
 from .user import *
