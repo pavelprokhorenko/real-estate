@@ -18,6 +18,7 @@ from app.api.deps import (
     get_request_active_superuser,
     get_request_active_user,
 )
+from app.core.config import settings
 
 router = APIRouter()
 
@@ -29,6 +30,7 @@ router = APIRouter()
     dependencies=[Depends(get_request_active_superuser)],
 )
 async def read_users(
+    *,
     skip: int = Query(0),
     limit: int = Query(100),
     db: Database = Depends(get_db_pg),
@@ -80,6 +82,7 @@ async def read_user_me(
 
 @router.patch("/me", status_code=status.HTTP_200_OK, response_model=schemas.UserOut)
 async def update_user_me(
+    *,
     request_user: Any = Depends(get_request_active_user),
     user_in: schemas.UserUpdate = Body(...),
     db: Database = Depends(get_db_pg),
@@ -97,6 +100,7 @@ async def update_user_me(
     dependencies=[Depends(get_request_active_superuser)],
 )
 async def read_user_by_id(
+    *,
     user_id: int = Path(...),
     db: Database = Depends(get_db_pg),
 ) -> Any:
@@ -156,3 +160,36 @@ async def delete_user(
             detail="The user with this id does not exist",
         )
     return await crud.user.remove(db, model_id=user_id)
+
+
+@router.post(
+    "/sign-up",
+    status_code=status.HTTP_201_CREATED,
+    response_model=schemas.UserOut,
+)
+async def sign_up(
+    *,
+    user: schemas.UserIn = Body(...),
+    background_tasks: BackgroundTasks,
+    db: Database = Depends(get_db_pg),
+) -> Any:
+    """
+    Sing up an unauthorized user.
+    """
+    if not settings.USERS_OPEN_SIGN_UP:
+        raise HTTPException(
+            status_code=403,
+            detail="Open user registration is forbidden on this server",
+        )
+    db_user = await crud.user.get_by_email(db, email=user.email)
+    if db_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="The user with this email already exists.",
+        )
+    background_tasks.add_task(
+        utils.send_new_account_email,
+        email_to=user.email,
+        full_name=crud.user.get_fullname(db_user=user),
+    )
+    return await crud.user.create(db, obj_in=user)

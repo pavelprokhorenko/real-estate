@@ -106,6 +106,8 @@ class Settings(BaseSettings):
             and values.get("EMAILS_FROM_EMAIL")
         )
 
+    USERS_OPEN_SIGN_UP: bool = False
+
 
 settings = Settings()
 
