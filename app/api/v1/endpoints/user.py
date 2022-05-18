@@ -13,12 +13,17 @@ from fastapi import (
 )
 
 from app import crud, schemas, utils
-from app.api.deps import get_db_pg
+from app.api.deps import get_db_pg, get_request_active_superuser
 
 router = APIRouter()
 
 
-@router.get("/", status_code=status.HTTP_200_OK, response_model=List[schemas.UserOut])
+@router.get(
+    "/",
+    status_code=status.HTTP_200_OK,
+    response_model=List[schemas.UserOut],
+    dependencies=[Depends(get_request_active_superuser)],
+)
 async def read_users(
     skip: int = Query(0),
     limit: int = Query(100),
@@ -30,7 +35,12 @@ async def read_users(
     return await crud.user.get_multi(db, skip=skip, limit=limit)
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.UserOut)
+@router.post(
+    "/",
+    status_code=status.HTTP_201_CREATED,
+    response_model=schemas.UserOut,
+    dependencies=[Depends(get_request_active_superuser)],
+)
 async def create_user(
     *,
     user: schemas.UserIn = Body(...),
@@ -55,7 +65,10 @@ async def create_user(
 
 
 @router.get(
-    "/{user_id}", status_code=status.HTTP_200_OK, response_model=schemas.UserOut
+    "/{user_id}",
+    status_code=status.HTTP_200_OK,
+    response_model=schemas.UserOut,
+    dependencies=[Depends(get_request_active_superuser)],
 )
 async def read_user_by_id(
     user_id: int = Path(...),
@@ -74,7 +87,10 @@ async def read_user_by_id(
 
 
 @router.patch(
-    "/{user_id}", status_code=status.HTTP_200_OK, response_model=schemas.UserOut
+    "/{user_id}",
+    status_code=status.HTTP_200_OK,
+    response_model=schemas.UserOut,
+    dependencies=[Depends(get_request_active_superuser)],
 )
 async def update_user(
     *,
@@ -94,7 +110,11 @@ async def update_user(
     return await crud.user.update(db, db_obj=user, obj_in=user_in)
 
 
-@router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/{user_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(get_request_active_superuser)],
+)
 async def delete_user(
     *,
     user_id: int = Path(...),
