@@ -49,7 +49,7 @@ async def create_user(
     background_tasks.add_task(
         utils.send_new_account_email,
         email_to=user.email,
-        username=crud.user.get_fullname(db_user=user),
+        full_name=crud.user.get_fullname(db_user=user),
     )
     return await crud.user.create(db, obj_in=user)
 
