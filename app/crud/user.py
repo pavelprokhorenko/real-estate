@@ -43,5 +43,8 @@ class CRUDUser(CRUDBase[type(user), UserIn, UserUpdate]):
             return None
         return obj
 
+    def get_username(self, *, db_user: Mapping) -> str:
+        return f"{db_user.first_name} {db_user.last_name}"
+
 
 user = CRUDUser(user)

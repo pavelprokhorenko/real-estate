@@ -47,9 +47,9 @@ async def recover_password(
     """
     Password Recovery
     """
-    user = await crud.user.get_by_email(db, email=email)
+    db_user = await crud.user.get_by_email(db, email=email)
 
-    if not user:
+    if not db_user:
         raise HTTPException(
             status_code=404,
             detail="The user with this username does not exist in the system.",
@@ -57,8 +57,8 @@ async def recover_password(
     password_reset_token = security.generate_password_reset_token(email=email)
     background_tasks.add_task(
         utils.send_reset_password_email,
-        email_to=user.email,
-        username=f"{user.first_name} {user.last_name}",
+        email_to=db_user.email,
+        username=crud.user.get_username(db_user=db_user),
         token=password_reset_token,
     )
     return dict(message="Password recovery email sent")
