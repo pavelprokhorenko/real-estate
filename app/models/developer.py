@@ -12,3 +12,20 @@ developer = sqlalchemy.Table(
     sqlalchemy.Column("website", sqlalchemy.String, default=""),
     sqlalchemy.Column("phone_number", sqlalchemy.String, default=""),
 )
+
+agent = sqlalchemy.Table(
+    "agent",
+    postgres_metadata,
+    sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True, index=True),
+    sqlalchemy.Column(
+        "developer_id",
+        sqlalchemy.Integer,
+        sqlalchemy.ForeignKey("developer.id", ondelete="CASCADE"),
+    ),
+    sqlalchemy.Column(
+        "user_id",
+        sqlalchemy.Integer,
+        sqlalchemy.ForeignKey("user.id", ondelete="CASCADE"),
+        index=True,
+    ),
+)
