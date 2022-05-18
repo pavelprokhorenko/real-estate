@@ -13,7 +13,11 @@ from fastapi import (
 )
 
 from app import crud, schemas, utils
-from app.api.deps import get_db_pg, get_request_active_superuser
+from app.api.deps import (
+    get_db_pg,
+    get_request_active_superuser,
+    get_request_active_user,
+)
 
 router = APIRouter()
 
@@ -62,6 +66,28 @@ async def create_user(
         full_name=crud.user.get_fullname(db_user=user),
     )
     return await crud.user.create(db, obj_in=user)
+
+
+@router.get("/me", status_code=status.HTTP_200_OK, response_model=schemas.UserOut)
+async def read_user_me(
+    request_user: Any = Depends(get_request_active_user),
+) -> Any:
+    """
+    Get request user.
+    """
+    return request_user
+
+
+@router.patch("/me", status_code=status.HTTP_200_OK, response_model=schemas.UserOut)
+async def update_user_me(
+    request_user: Any = Depends(get_request_active_user),
+    user_in: schemas.UserUpdate = Body(...),
+    db: Database = Depends(get_db_pg),
+) -> Any:
+    """
+    Update request user.
+    """
+    return await crud.user.update(db, db_obj=request_user, obj_in=user_in)
 
 
 @router.get(

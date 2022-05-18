@@ -36,13 +36,13 @@ def create_access_token(
     return encoded_jwt
 
 
-def generate_password_reset_token(email: str) -> str:
+def generate_password_reset_token(user_id: int) -> str:
     delta = timedelta(minutes=settings.EMAIL_RESET_TOKEN_EXPIRE_MINUTES)
     now = datetime.utcnow()
     expires = now + delta
     exp = expires.timestamp()
     encoded_jwt = jwt.encode(
-        dict(exp=exp, nbf=now, sub=email),
+        dict(exp=exp, nbf=now, sub=user_id),
         settings.SECRET_KEY,
         algorithm=ENCODING_ALGORITHM,
     )
