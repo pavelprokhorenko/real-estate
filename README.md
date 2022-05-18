@@ -26,7 +26,7 @@ PGDATA=/var/lib/postgresql/data/pgdata
 SMTP_USER=some-email
 SMTP_PASSWORD=some-password
 ```
-* To generate hex 32 byte secret_key:
+* To generate hex 32 hex SECRET_KEY:
 ```console
 $ openssl rand -hex 32
 ```
