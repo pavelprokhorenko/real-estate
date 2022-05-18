@@ -24,9 +24,24 @@ def send_new_account_email(email_to: str, username: str) -> None:
     """
     Send email to new user.
     """
-    subject = f"{settings.PROJECT_NAME} - new account"
+    subject = f"{settings.PROJECT_NAME} - New Account"
     message = (
         f"You have successfully registered. Congratulations, {username}!\n"
         f"Go to dashboard - {settings.SERVER_HOST}"
+    )
+    send_email(email_to=email_to, email_subject=subject, email_message=message)
+
+
+def send_reset_password_email(email_to: str, username: str, token: str) -> None:
+    """
+    Send email with temporary JWT token.
+    """
+    subject = f"{settings.PROJECT_NAME} - Reset Password"
+    message = (
+        f"We received a request to recover the password for user {username} with email {email_to}\n"
+        f"Reset your password by clicking the link below:\n"
+        f"{settings.SERVER_HOST}/reset-password?token={token}\n"
+        f"The reset password link will expire in {settings.EMAIL_RESET_TOKEN_EXPIRE_MINUTES} minutes.\n"
+        f"If you didn't request a password recovery you can disregard this email."
     )
     send_email(email_to=email_to, email_subject=subject, email_message=message)

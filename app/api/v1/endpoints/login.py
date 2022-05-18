@@ -2,10 +2,11 @@ from datetime import timedelta
 from typing import Any
 
 from databases import Database
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Body, Depends, HTTPException
+from fastapi.background import BackgroundTasks
 from fastapi.security import OAuth2PasswordRequestForm
 
-from app import crud, schemas
+from app import crud, schemas, utils
 from app.api.deps import get_db_pg
 from app.core import security
 from app.core.config import settings
@@ -35,3 +36,57 @@ async def login_access_token(
         ),
         token_type="bearer",
     )
+
+
+@router.post("/password-recovery", response_model=schemas.Message)
+async def recover_password(
+    background_tasks: BackgroundTasks,
+    email: str = Body(...),
+    db: Database = Depends(get_db_pg),
+) -> Any:
+    """
+    Password Recovery
+    """
+    user = await crud.user.get_by_email(db, email=email)
+
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="The user with this username does not exist in the system.",
+        )
+    password_reset_token = security.generate_password_reset_token(email=email)
+    background_tasks.add_task(
+        utils.send_reset_password_email,
+        email_to=user.email,
+        username=f"{user.first_name} {user.last_name}",
+        token=password_reset_token,
+    )
+    return dict(message="Password recovery email sent")
+
+
+@router.post("/reset-password", response_model=schemas.Message)
+async def reset_password(
+    token: str = Body(...),
+    new_password: str = Body(...),
+    db: Database = Depends(get_db_pg),
+) -> Any:
+    """
+    Reset password
+    """
+    email = security.verify_password_reset_token(token)
+    if not email:
+        raise HTTPException(status_code=400, detail="Invalid token")
+    user = await crud.user.get_by_email(db, email=email)
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="The user with this username does not exist in the system.",
+        )
+    elif not user.is_active:
+        raise HTTPException(status_code=400, detail="Inactive user")
+    await crud.user.update(
+        db,
+        db_obj=user,
+        obj_in=dict(hashed_password=security.get_password_hash(new_password)),
+    )
+    return dict(message="Password updated successfully")
