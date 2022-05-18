@@ -6,7 +6,7 @@ from app.db.metadata import postgres_metadata
 user = sqlalchemy.Table(
     "user",
     postgres_metadata,
-    sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
+    sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True, index=True),
     sqlalchemy.Column(
         "email", sqlalchemy_utils.EmailType, unique=True, index=True, nullable=False
     ),
