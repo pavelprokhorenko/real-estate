@@ -22,9 +22,9 @@ class AgentIn(BaseSchema):
     user_id: int
 
 
-class AgentOut(DeveloperIn):
+class AgentOut(AgentIn):
     id: int
 
 
-class AgentUpdate(DeveloperIn):
+class AgentUpdate(BaseSchema):
     developer_id: Optional[int]
