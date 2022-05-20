@@ -27,6 +27,27 @@ async def read_developers(
     return await crud.developer.get_multi(db, skip=skip, limit=limit)
 
 
+@router.get(
+    "/agents/{developer_id}",
+    status_code=status.HTTP_200_OK,
+    response_model=List[schemas.AgentOut],
+    dependencies=[Depends(get_request_active_superuser)],
+)
+async def read_developer_agents(
+    *,
+    skip: int = Query(0),
+    limit: int = Query(100),
+    developer_id: int = Path(...),
+    db: Database = Depends(get_db_pg),
+) -> Any:
+    """
+    Retrieve developer agents.
+    """
+    return await crud.developer.get_agents(
+        db, model_id=developer_id, skip=skip, limit=limit
+    )
+
+
 @router.post(
     "/",
     status_code=status.HTTP_201_CREATED,
