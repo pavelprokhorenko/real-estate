@@ -12,7 +12,7 @@
 ```dotenv
 # base
 SECRET_KEY=some-secret-key
-PROJECT_NAME=some-project-name
+PROJECT_NAME='Some Project Name'
 
 # databases
 POSTGRES_USER=postgres

@@ -1,4 +1,4 @@
-from typing import Any, Dict, Mapping, Optional, Union
+from typing import Any, Dict, Optional, Union
 
 from databases import Database
 
@@ -9,12 +9,12 @@ from app.schemas.user import UserIn, UserUpdate
 
 
 class CRUDUser(CRUDBase[type(user), UserIn, UserUpdate]):
-    async def get_by_email(self, db: Database, *, email: str) -> Optional[Mapping]:
+    async def get_by_email(self, db: Database, *, email: str) -> Optional[Any]:
         return await db.fetch_one(
             self.model.select().where(self.model.c.email == email)
         )
 
-    async def create(self, db: Database, *, obj_in: UserIn) -> Mapping:
+    async def create(self, db: Database, *, obj_in: UserIn) -> Any:
         db_obj = obj_in.dict(exclude={"password"})
         db_obj["hashed_password"] = get_password_hash(obj_in.password)
         user_id = await db.execute(self.model.insert().values(**db_obj))
@@ -22,7 +22,7 @@ class CRUDUser(CRUDBase[type(user), UserIn, UserUpdate]):
 
     async def update(
         self, db: Database, *, db_obj: user, obj_in: Union[UserUpdate, Dict[str, Any]]
-    ) -> Mapping:
+    ) -> Any:
         if isinstance(obj_in, dict):
             update_data = obj_in
         else:
@@ -35,7 +35,7 @@ class CRUDUser(CRUDBase[type(user), UserIn, UserUpdate]):
 
     async def authenticate(
         self, db: Database, *, email: str, password: str
-    ) -> Optional[Mapping]:
+    ) -> Optional[Any]:
         obj = await self.get_by_email(db, email=email)
         if not obj:
             return None
@@ -43,7 +43,7 @@ class CRUDUser(CRUDBase[type(user), UserIn, UserUpdate]):
             return None
         return obj
 
-    def get_fullname(self, *, db_user: Mapping) -> str:
+    def get_fullname(self, *, db_user: Any) -> str:
         return f"{db_user.first_name} {db_user.last_name}"
 
 
