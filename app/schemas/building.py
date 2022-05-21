@@ -1,6 +1,15 @@
-from typing import Optional
+from typing import List, Optional
 
 from app.schemas import BaseSchema
+
+
+class AmenityIn(BaseSchema):
+    name: str
+
+
+class AmenityOut(AmenityIn):
+    id: int
+    name: str
 
 
 class BuildingIn(BaseSchema):
@@ -14,6 +23,9 @@ class BuildingIn(BaseSchema):
     number_of_floors: int
     year_built: str
 
+    amenities: List[AmenityIn]
+
 
 class BuildingOut(BuildingIn):
     id: int
+    amenities: List[AmenityOut]
