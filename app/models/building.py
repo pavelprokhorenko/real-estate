@@ -31,6 +31,7 @@ building = sqlalchemy.Table(
     sqlalchemy.Column("longitude", sqlalchemy.Numeric, nullable=False),
     sqlalchemy.Column("building_class", sqlalchemy.String, nullable=False),
     sqlalchemy.Column("postcode", sqlalchemy.String, nullable=False),
+    sqlalchemy.Column("number_of_units", sqlalchemy.Integer, nullable=False),
     sqlalchemy.Column("number_of_floors", sqlalchemy.Integer, nullable=False),
     sqlalchemy.Column("year_built", sqlalchemy.String, nullable=False),
 )
