@@ -131,7 +131,7 @@ async def delete_developer(
     db: Database = Depends(get_db_pg),
 ) -> None:
     """
-    Update a developer.
+    Delete a developer.
     """
     developer = await crud.developer.get(db, model_id=developer_id)
     if not developer:

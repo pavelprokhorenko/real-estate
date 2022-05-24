@@ -151,7 +151,7 @@ async def delete_user(
     db: Database = Depends(get_db_pg),
 ) -> None:
     """
-    Update a user.
+    Delete a user.
     """
     user = await crud.user.get(db, model_id=user_id)
     if not user:

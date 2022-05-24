@@ -19,7 +19,7 @@ async def login_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(), db: Database = Depends(get_db_pg)
 ) -> Any:
     """
-    OAuth2 compatible token login, get an access token for future requests
+    OAuth2 compatible token login, get an access token for future requests.
     """
     user = await crud.user.authenticate(
         db, email=form_data.username, password=form_data.password
@@ -45,7 +45,7 @@ async def recover_password(
     db: Database = Depends(get_db_pg),
 ) -> Any:
     """
-    Password Recovery
+    Password Recovery.
     """
     db_user = await crud.user.get_by_email(db, email=email)
 
@@ -71,7 +71,7 @@ async def reset_password(
     db: Database = Depends(get_db_pg),
 ) -> Any:
     """
-    Reset password
+    Reset password.
     """
     email = security.verify_password_reset_token(token)
     if not email:

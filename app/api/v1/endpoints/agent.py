@@ -86,7 +86,7 @@ async def update_agent(
     db: Database = Depends(get_db_pg),
 ) -> Any:
     """
-    Update a agent.
+    Update an agent.
     """
     agent = await crud.agent.get(db, model_id=agent_id)
     if not agent:
@@ -108,7 +108,7 @@ async def delete_agent(
     db: Database = Depends(get_db_pg),
 ) -> None:
     """
-    Update a agent.
+    Delete an agent.
     """
     agent = await crud.agent.get(db, model_id=agent_id)
     if not agent:
