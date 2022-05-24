@@ -27,13 +27,14 @@ class BuildingIn(BaseSchema):
     number_of_floors: int
     year_built: str
 
-    amenities: List[AmenityIn]
+    amenities: Optional[List[int]]
 
 
 class BuildingUpdate(BuildingIn):
     latitude: Optional[float]
     longitude: Optional[float]
     building_class: Optional[str]
+    postcode: Optional[str]
     longitude: Optional[str]
     number_of_units: Optional[int]
     number_of_floors: Optional[int]
@@ -42,4 +43,4 @@ class BuildingUpdate(BuildingIn):
 
 class BuildingOut(BuildingIn):
     id: int
-    amenities: List[AmenityOut]
+    amenities: Optional[List[AmenityOut]]
