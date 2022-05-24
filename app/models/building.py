@@ -18,7 +18,7 @@ amenity = sqlalchemy.Table(
     "amenity",
     postgres_metadata,
     sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True, index=True),
-    sqlalchemy.Column("name", sqlalchemy.Integer, unique=True, index=True),
+    sqlalchemy.Column("name", sqlalchemy.String, unique=True, index=True),
 )
 
 building = sqlalchemy.Table(
