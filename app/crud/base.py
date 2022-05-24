@@ -17,7 +17,7 @@ class CRUDBase(Generic[ModelTable, CreateSchemaType, UpdateSchemaType]):
 
         **Parameters**
 
-        * `model`: A SQLAlchemy model class
+        * `model`: A SQLAlchemy table instance
         * `schema`: A Pydantic model (schema) class
         """
         self.model = model
@@ -33,7 +33,7 @@ class CRUDBase(Generic[ModelTable, CreateSchemaType, UpdateSchemaType]):
         return await db.fetch_all(self.model.select().offset(skip).limit(limit))
 
     async def create(self, db: Database, *, obj_in: CreateSchemaType) -> ModelTable:
-        obj_in_data = jsonable_encoder(obj_in)
+        obj_in_data = jsonable_encoder(obj_in.dict(exclude_unset=True))
         db_query = self.model.insert().values(**obj_in_data)
         obj_id = await db.execute(db_query)
         return await self.get(db=db, model_id=obj_id)
@@ -50,9 +50,13 @@ class CRUDBase(Generic[ModelTable, CreateSchemaType, UpdateSchemaType]):
         else:
             update_data = obj_in.dict(exclude_unset=True)
         obj_id = db_obj.id
-        await db.execute(
-            update(self.model).where(self.model.c.id == obj_id).values(**update_data)
-        )
+
+        if update_data:
+            await db.execute(
+                update(self.model)
+                .where(self.model.c.id == obj_id)
+                .values(**update_data)
+            )
         return await self.get(db=db, model_id=obj_id)
 
     async def remove(self, db: Database, *, model_id: int) -> None:

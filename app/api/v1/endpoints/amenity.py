@@ -12,108 +12,108 @@ router = APIRouter()
 @router.get(
     "/",
     status_code=status.HTTP_200_OK,
-    response_model=List[schemas.AgentOut],
+    response_model=List[schemas.AmenityOut],
     dependencies=[Depends(get_request_active_superuser)],
 )
-async def read_agents(
+async def read_amenities(
     *,
     skip: int = Query(0),
     limit: int = Query(100),
     db: Database = Depends(get_db_pg),
 ) -> Any:
     """
-    Retrieve agents.
+    Retrieve amenities.
     """
-    return await crud.agent.get_multi(db, skip=skip, limit=limit)
+    return await crud.amenity.get_multi(db, skip=skip, limit=limit)
 
 
 @router.post(
     "/",
     status_code=status.HTTP_201_CREATED,
-    response_model=schemas.AgentOut,
+    response_model=schemas.AmenityOut,
     dependencies=[Depends(get_request_active_superuser)],
 )
-async def create_agent(
+async def create_amenity(
     *,
-    agent: schemas.AgentIn = Body(...),
+    amenity: schemas.AmenityIn = Body(...),
     db: Database = Depends(get_db_pg),
 ) -> Any:
     """
-    Create new agent.
+    Create new amenity.
     """
-    db_agent = await crud.agent.get_by_user_id(db, user_id=agent.user_id)
-    if db_agent:
+    db_amenity = await crud.amenity.get_by_name(db, name=amenity.name)
+    if db_amenity:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="The agent with this user id name already exists.",
+            detail="The amenity with this name already exists.",
         )
-    return await crud.agent.create(db, obj_in=agent)
+    return await crud.amenity.create(db, obj_in=amenity)
 
 
 @router.get(
-    "/{agent_id}",
+    "/{amenity_id}",
     status_code=status.HTTP_200_OK,
-    response_model=schemas.AgentOut,
+    response_model=schemas.AmenityOut,
     dependencies=[Depends(get_request_active_superuser)],
 )
-async def read_agent_by_id(
+async def read_amenity_by_id(
     *,
-    agent_id: int = Path(...),
+    amenity_id: int = Path(...),
     db: Database = Depends(get_db_pg),
 ) -> Any:
     """
-    Get a specific agent by id.
+    Get a specific amenity by id.
     """
-    agent = await crud.agent.get(db, model_id=agent_id)
-    if not agent:
+    amenity = await crud.amenity.get(db, model_id=amenity_id)
+    if not amenity:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="The agent with this id does not exist",
+            detail="The amenity with this id does not exist",
         )
-    return agent
+    return amenity
 
 
-@router.patch(
-    "/{agent_id}",
+@router.put(
+    "/{amenity_id}",
     status_code=status.HTTP_200_OK,
-    response_model=schemas.AgentOut,
+    response_model=schemas.AmenityOut,
     dependencies=[Depends(get_request_active_superuser)],
 )
-async def update_agent(
+async def update_amenity(
     *,
-    agent_id: int = Path(...),
-    agent_in: schemas.AgentUpdate = Body(...),
+    amenity_id: int = Path(...),
+    amenity_in: schemas.AmenityUpdate = Body(...),
     db: Database = Depends(get_db_pg),
 ) -> Any:
     """
-    Update an agent.
+    Update an amenity.
     """
-    agent = await crud.agent.get(db, model_id=agent_id)
-    if not agent:
+    amenity = await crud.amenity.get(db, model_id=amenity_id)
+    if not amenity:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="The agent with this id does not exist",
+            detail="The amenity with this id does not exist",
         )
-    return await crud.agent.update(db, db_obj=agent, obj_in=agent_in)
+    return await crud.amenity.update(db, db_obj=amenity, obj_in=amenity_in)
 
 
 @router.delete(
-    "/{agent_id}",
+    "/{amenity_id}",
     status_code=status.HTTP_204_NO_CONTENT,
     dependencies=[Depends(get_request_active_superuser)],
 )
-async def delete_agent(
+async def delete_amenity(
     *,
-    agent_id: int = Path(...),
+    amenity_id: int = Path(...),
     db: Database = Depends(get_db_pg),
 ) -> None:
     """
-    Delete an agent.
+    Delete an amenity.
     """
-    agent = await crud.agent.get(db, model_id=agent_id)
-    if not agent:
+    amenity = await crud.amenity.get(db, model_id=amenity_id)
+    if not amenity:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="The agent with this id does not exist",
+            detail="The amenity with this id does not exist",
         )
-    return await crud.agent.remove(db, model_id=agent_id)
+    return await crud.amenity.remove(db, model_id=amenity_id)
