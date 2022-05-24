@@ -7,6 +7,10 @@ class AmenityIn(BaseSchema):
     name: str
 
 
+class AmenityUpdate(AmenityIn):
+    ...
+
+
 class AmenityOut(AmenityIn):
     id: int
     name: str
