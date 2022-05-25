@@ -4,7 +4,7 @@ from databases import Database
 
 from app.crud.base import CRUDBase
 from app.models import amenity
-from app.schemas.building import AmenityIn, AmenityUpdate
+from app.schemas.unit import AmenityIn, AmenityUpdate
 
 
 class CRUDAmenity(CRUDBase[type(amenity), AmenityIn, AmenityUpdate]):
