@@ -72,10 +72,9 @@ class CRUDBuilding(CRUDBase[type(building), BuildingIn, BuildingUpdate]):
     ) -> Any:
         if isinstance(obj_in, dict):
             update_data = obj_in
+            del update_data["amenities"]
         else:
             update_data = obj_in.dict(exclude_unset=True, exclude={"amenities"})
-        if update_data.get("amenities"):
-            del update_data["amenities"]
 
         await self.delete_building_amenities(db, model_id=db_obj.id)
         await self.add_amenity_to_building(
