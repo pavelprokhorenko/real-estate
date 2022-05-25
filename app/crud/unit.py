@@ -69,10 +69,12 @@ class CRUDUnit(CRUDBase[type(unit), UnitIn, UnitUpdate]):
         else:
             update_data = obj_in.dict(exclude_unset=True, exclude={"amenities"})
 
-        await self.delete_unit_amenities(db, model_id=db_obj.id)
-        await self.add_amenities_to_unit(
-            db, amenities=obj_in.amenities, model_id=db_obj.id
-        )
+        amenities = obj_in.amenities
+        if amenities:
+            await self.delete_unit_amenities(db, model_id=db_obj.id)
+            await self.add_amenities_to_unit(
+                db, amenities=amenities, model_id=db_obj.id
+            )
 
         return await super().update(db, db_obj=db_obj, obj_in=update_data)
 
