@@ -5,7 +5,6 @@ from fastapi import APIRouter, Body, Depends, HTTPException, Path, Query, status
 
 from app import crud, schemas
 from app.api.deps import get_db_pg, get_request_active_superuser
-from app.utils.building import get_building_schema
 
 router = APIRouter()
 
@@ -25,19 +24,7 @@ async def read_buildings(
     """
     Retrieve buildings.
     """
-    buildings = list()
-    db_buildings = await crud.building.get_multi(db, skip=skip, limit=limit)
-    for building in db_buildings:
-        buildings.append(
-            get_building_schema(
-                building_record=building,
-                amenities=await crud.building.get_building_amenities(
-                    db, model_id=building.id
-                ),
-            )
-        )
-
-    return buildings
+    return await crud.building.get_multi(db, skip=skip, limit=limit)
 
 
 @router.post(
@@ -58,13 +45,9 @@ async def create_building(
     if db_building:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="The building with this name already exists.",
+            detail="The building with this international name already exists.",
         )
-    obj = await crud.building.create(db, obj_in=building)
-    return get_building_schema(
-        building_record=obj,
-        amenities=await crud.building.get_building_amenities(db, model_id=obj.id),
-    )
+    return await crud.building.create(db, obj_in=building)
 
 
 @router.get(
@@ -87,10 +70,7 @@ async def read_building_by_id(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="The building with this id does not exist",
         )
-    return get_building_schema(
-        building_record=building,
-        amenities=await crud.building.get_building_amenities(db, model_id=building.id),
-    )
+    return building
 
 
 @router.patch(
@@ -114,12 +94,7 @@ async def update_building(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="The building with this id does not exist",
         )
-    return get_building_schema(
-        building_record=await crud.building.update(
-            db, db_obj=building, obj_in=building_in
-        ),
-        amenities=await crud.building.get_building_amenities(db, model_id=building.id),
-    )
+    return await crud.building.update(db, db_obj=building, obj_in=building_in)
 
 
 @router.delete(
