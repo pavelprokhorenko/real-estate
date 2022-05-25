@@ -39,6 +39,35 @@ async def read_units(
 
 
 @router.post(
+    "/search",
+    status_code=status.HTTP_200_OK,
+    response_model=List[schemas.UnitOut],
+    dependencies=[Depends(get_request_active_superuser)],
+)
+async def search_units(
+    *,
+    form: schemas.UnitForm = Body(...),
+    skip: int = Query(0),
+    limit: int = Query(100),
+    db: Database = Depends(get_db_pg),
+) -> Any:
+    """
+    Retrieve units with filters.
+    """
+    units = list()
+    db_units = await crud.unit.search(db, form=form, skip=skip, limit=limit)
+    for unit in db_units:
+        units.append(
+            unit_dict(
+                unit_record=unit,
+                amenities=await crud.unit.get_unit_amenities(db, model_id=unit.id),
+            )
+        )
+
+    return units
+
+
+@router.post(
     "/",
     status_code=status.HTTP_201_CREATED,
     response_model=schemas.UnitOut,

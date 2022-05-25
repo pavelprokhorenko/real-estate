@@ -35,6 +35,22 @@ class UnitUpdate(UnitIn):
     building_id: Optional[int]
 
 
+class UnitForm(BaseSchema):
+    min_price: Optional[float] = 0
+    max_price: Optional[float] = 10_000_000_000
+
+    min_square: Optional[float] = 0
+    max_square: Optional[float] = 100_000
+
+    min_bedrooms: Optional[int] = 0
+    max_bedrooms: Optional[int] = 100_000
+
+    min_bathrooms: Optional[int] = 0
+    max_bathrooms: Optional[int] = 100_000
+
+    amenities: Optional[List[int]]
+
+
 class UnitOut(UnitIn):
     id: int
 

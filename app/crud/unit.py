@@ -5,25 +5,40 @@ from sqlalchemy import delete
 
 from app.crud.base import CRUDBase
 from app.models import amenity, unit, unit_amenities
-from app.schemas.unit import UnitIn, UnitUpdate
+from app.schemas.unit import UnitForm, UnitIn, UnitUpdate
 
 
 class CRUDUnit(CRUDBase[type(unit), UnitIn, UnitUpdate]):
-    async def get_by_amenities(self, db: Database, *, amenities: List[int]) -> Any:
-        units = list()
-        for amenity_id in amenities:
-            units.extend(
-                await db.fetch_all(
-                    unit_amenities.select().where(
-                        unit_amenities.c.amenity_id == amenity_id
-                    )
-                )
-            )
-        return await db.fetch_all(
-            self.model.select().where(
-                self.model.c.id.in_([record.unit_id for record in units])
+    async def search(
+        self, db: Database, *, form: UnitForm, skip: int = 0, limit: int = 100
+    ) -> List[Any]:
+        query = (
+            self.model.select()
+            .offset(skip)
+            .limit(limit)
+            .where(
+                form.min_price <= self.model.c.price,
+                self.model.c.price <= form.max_price,
+                form.min_square <= self.model.c.square,
+                self.model.c.square <= form.max_square,
+                form.min_bedrooms <= self.model.c.bedrooms,
+                self.model.c.bedrooms <= form.max_bedrooms,
+                form.min_bathrooms <= self.model.c.bathrooms,
+                self.model.c.bathrooms <= form.max_bathrooms,
             )
         )
+
+        if form.amenities:
+            q = unit_amenities.select().where(
+                unit_amenities.c.amenity_id.in_(form.amenities)
+            )
+            amenities = await db.fetch_all(query=q)
+
+            query = query.where(
+                self.model.c.id.in_((record.unit_id for record in amenities))
+            )
+
+        return await db.fetch_all(query=query)
 
     async def get_unit_amenities(self, db: Database, *, model_id: int) -> Any:
         amenities = await db.fetch_all(
