@@ -4,8 +4,8 @@ from app.schemas import BaseSchema
 
 
 class BuildingIn(BaseSchema):
-    name: Optional[str] = ""
-    description: Optional[str] = ""
+    name: Optional[str]
+    description: Optional[str]
     latitude: float
     longitude: float
     building_class: str
