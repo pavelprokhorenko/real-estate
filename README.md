@@ -25,6 +25,10 @@ PGDATA=/var/lib/postgresql/data/pgdata
 # SMTP
 SMTP_USER=some-email
 SMTP_PASSWORD=some-password
+
+# Auth
+FIRST_SUPERUSER=some-user
+FIRST_SUPERUSER_PASSWORD=some-user-password
 ```
 * To generate hex 32 hex SECRET_KEY:
 ```console

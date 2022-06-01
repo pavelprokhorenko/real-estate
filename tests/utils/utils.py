@@ -3,6 +3,9 @@ import random
 import string
 
 from fastapi.encoders import jsonable_encoder
+from fastapi.testclient import TestClient
+
+from app.core.config import settings
 
 
 def random_lower_string() -> str:
@@ -35,3 +38,15 @@ def random_datetime() -> str:
     return jsonable_encoder(
         datetime.datetime.now() - datetime.timedelta(days=random.randint(0, 10_000))
     )
+
+
+def get_superuser_token_headers(client: TestClient) -> dict[str, str]:
+    login_data = {
+        "username": settings.FIRST_SUPERUSER,
+        "password": settings.FIRST_SUPERUSER_PASSWORD,
+    }
+    resp = client.post(f"{settings.API_V1_STR}/login/access-token", data=login_data)
+    tokens = resp.json()
+    access_token = tokens["access_token"]
+    headers = {"Authorization": f"Bearer {access_token}"}
+    return headers

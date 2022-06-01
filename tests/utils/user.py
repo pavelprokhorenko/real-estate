@@ -21,12 +21,12 @@ def user_authentication_headers(
     return dict(Authorization=f"Bearer {auth_token}")
 
 
-def create_random_user(db: Database) -> Any:
+def create_random_user(db: Database, is_superuser: bool = False) -> Any:
     email = random_email()
     password = random_lower_string()
     first_name = random_lower_string()
     last_name = random_lower_string()
-    user_in = UserIn(email=email, password=password, first_name=first_name, last_name=last_name)
+    user_in = UserIn(email=email, password=password, first_name=first_name, last_name=last_name, is_superuser=is_superuser)
 
     user = await crud.user.create(db=db, obj_in=user_in)
     return user
