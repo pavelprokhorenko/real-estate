@@ -54,7 +54,7 @@ For testing, you should go inside the container and run the command `pytest .`
 
 ```console
 $ docker exec -it <FastAPI container ID> bash
-$ pytest .
+$ pytest tests --asyncio-mode=auto
 ```
 
 ## Project structure

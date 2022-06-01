@@ -1,6 +1,7 @@
 from typing import Generator
 
 import pytest
+import pytest_asyncio
 from databases import Database
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Connection
@@ -42,7 +43,7 @@ def setup_pg_database(pg_connection: Connection, alembic_cfg: Config) -> Generat
         command.downgrade(alembic_cfg, "base")
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def pg_db(setup_pg_database: Generator) -> Generator:
     db = Database(settings.TEST_POSTGRES_URL)
     try:
