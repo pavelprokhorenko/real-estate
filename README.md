@@ -25,6 +25,10 @@ PGDATA=/var/lib/postgresql/data/pgdata
 # SMTP
 SMTP_USER=some-email
 SMTP_PASSWORD=some-password
+
+# Auth
+FIRST_SUPERUSER=some-user
+FIRST_SUPERUSER_PASSWORD=some-user-password
 ```
 * To generate hex 32 hex SECRET_KEY:
 ```console
@@ -54,7 +58,7 @@ For testing, you should go inside the container and run the command `pytest .`
 
 ```console
 $ docker exec -it <FastAPI container ID> bash
-$ pytest .
+$ pytest tests --asyncio-mode=auto
 ```
 
 ## Project structure
