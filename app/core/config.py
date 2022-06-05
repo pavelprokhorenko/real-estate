@@ -2,7 +2,7 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Union
 
-from pydantic import AnyHttpUrl, BaseSettings, PostgresDsn, validator, EmailStr
+from pydantic import AnyHttpUrl, BaseSettings, EmailStr, PostgresDsn, validator
 
 
 class Settings(BaseSettings):
@@ -108,6 +108,8 @@ class Settings(BaseSettings):
 
     FIRST_SUPERUSER: EmailStr
     FIRST_SUPERUSER_PASSWORD: str
+    FIRST_SUPERUSER_FIRST_NAME: str
+    FIRST_SUPERUSER_LAST_NAME: str
     USERS_OPEN_SIGN_UP: bool = False
 
 
