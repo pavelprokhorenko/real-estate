@@ -8,7 +8,7 @@ from httpx import AsyncClient
 from app.core.config import settings
 from app.fastapi_app import app
 from tests.utils.user import authentication_token_from_email
-from tests.utils.utils import get_superuser_token_headers
+from tests.utils.utils import get_superuser_token_headers, random_email
 
 
 @pytest_asyncio.fixture
@@ -30,8 +30,8 @@ async def superuser_token_headers(api_client: AsyncClient) -> Dict[str, str]:
 
 @pytest_asyncio.fixture
 async def normal_user_token_headers(
-    api_client: AsyncClient, db: Database
+    api_client: AsyncClient, pg_db: Database
 ) -> Dict[str, str]:
     return await authentication_token_from_email(
-        api_client=api_client, email=settings.EMAIL_TEST_USER, db=db
+        api_client=api_client, email=random_email(), db=pg_db
     )

@@ -47,7 +47,7 @@ async def authentication_token_from_email(
     If the user doesn't exist it is created first.
     """
     password = random_lower_string()
-    user = crud.user.get_by_email(db, email=email)
+    user = await crud.user.get_by_email(db, email=email)
     if not user:
         first_name = random_lower_string()
         last_name = random_lower_string()
@@ -59,6 +59,6 @@ async def authentication_token_from_email(
         user_in_update = UserUpdate(password=password)
         await crud.user.update(db, db_obj=user, obj_in=user_in_update)
 
-    return user_authentication_headers(
+    return await user_authentication_headers(
         api_client=api_client, email=email, password=password
     )
