@@ -15,7 +15,9 @@ async def test_create_user(pg_db: Database) -> None:
     password = random_lower_string()
     first_name = random_lower_string()
     last_name = random_lower_string()
-    user_in = UserIn(email=email, password=password, first_name=first_name, last_name=last_name)
+    user_in = UserIn(
+        email=email, password=password, first_name=first_name, last_name=last_name
+    )
     user = await crud.user.create(pg_db, obj_in=user_in)
 
     assert user.email == email
@@ -30,10 +32,14 @@ async def test_authenticate_user(pg_db: Database) -> None:
     password = random_lower_string()
     first_name = random_lower_string()
     last_name = random_lower_string()
-    user_in = UserIn(email=email, password=password, first_name=first_name, last_name=last_name)
+    user_in = UserIn(
+        email=email, password=password, first_name=first_name, last_name=last_name
+    )
     user = await crud.user.create(pg_db, obj_in=user_in)
 
-    authenticated_user = await crud.user.authenticate(pg_db, email=email, password=password)
+    authenticated_user = await crud.user.authenticate(
+        pg_db, email=email, password=password
+    )
 
     assert authenticated_user
     assert user.email == authenticated_user.email
@@ -53,7 +59,9 @@ async def test_check_if_user_is_active(pg_db: Database) -> None:
     password = random_lower_string()
     first_name = random_lower_string()
     last_name = random_lower_string()
-    user_in = UserIn(email=email, password=password, first_name=first_name, last_name=last_name)
+    user_in = UserIn(
+        email=email, password=password, first_name=first_name, last_name=last_name
+    )
 
     user = await crud.user.create(pg_db, obj_in=user_in)
 
@@ -65,7 +73,13 @@ async def test_check_if_user_is_inactive(pg_db: Database) -> None:
     password = random_lower_string()
     first_name = random_lower_string()
     last_name = random_lower_string()
-    user_in = UserIn(email=email, password=password, first_name=first_name, last_name=last_name, is_active=False)
+    user_in = UserIn(
+        email=email,
+        password=password,
+        first_name=first_name,
+        last_name=last_name,
+        is_active=False,
+    )
 
     user = await crud.user.create(pg_db, obj_in=user_in)
 
@@ -77,7 +91,13 @@ async def test_check_if_user_is_superuser(pg_db: Database) -> None:
     password = random_lower_string()
     first_name = random_lower_string()
     last_name = random_lower_string()
-    user_in = UserIn(email=email, password=password, first_name=first_name, last_name=last_name, is_superuser=True)
+    user_in = UserIn(
+        email=email,
+        password=password,
+        first_name=first_name,
+        last_name=last_name,
+        is_superuser=True,
+    )
 
     user = await crud.user.create(pg_db, obj_in=user_in)
 
@@ -89,7 +109,9 @@ async def test_check_if_user_is_superuser_normal_user(pg_db: Database) -> None:
     password = random_lower_string()
     first_name = random_lower_string()
     last_name = random_lower_string()
-    user_in = UserIn(email=email, password=password, first_name=first_name, last_name=last_name)
+    user_in = UserIn(
+        email=email, password=password, first_name=first_name, last_name=last_name
+    )
 
     user = await crud.user.create(pg_db, obj_in=user_in)
 
@@ -101,7 +123,9 @@ async def test_get_user(pg_db: Database) -> None:
     password = random_lower_string()
     first_name = random_lower_string()
     last_name = random_lower_string()
-    user_in = UserIn(email=email, password=password, first_name=first_name, last_name=last_name)
+    user_in = UserIn(
+        email=email, password=password, first_name=first_name, last_name=last_name
+    )
 
     user = await crud.user.create(pg_db, obj_in=user_in)
     user_2 = await crud.user.get(pg_db, model_id=user.id)
@@ -116,7 +140,9 @@ async def test_update_user(pg_db: Database) -> None:
     password = random_lower_string()
     first_name = random_lower_string()
     last_name = random_lower_string()
-    user_in = UserIn(email=email, password=password, first_name=first_name, last_name=last_name)
+    user_in = UserIn(
+        email=email, password=password, first_name=first_name, last_name=last_name
+    )
 
     user = await crud.user.create(pg_db, obj_in=user_in)
 

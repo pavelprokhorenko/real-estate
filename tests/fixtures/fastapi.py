@@ -1,6 +1,7 @@
 from typing import Generator
 
 import pytest
+import pytest_asyncio
 from databases import Database
 from fastapi.testclient import TestClient
 
@@ -26,8 +27,10 @@ def superuser_token_headers(api_client: TestClient) -> dict[str, str]:
     return get_superuser_token_headers(api_client)
 
 
-@pytest.fixture
-def normal_user_token_headers(api_client: TestClient, db: Database) -> dict[str, str]:
-    return authentication_token_from_email(
+@pytest_asyncio.fixture
+async def normal_user_token_headers(
+    api_client: TestClient, db: Database
+) -> dict[str, str]:
+    return await authentication_token_from_email(
         api_client=api_client, email=settings.EMAIL_TEST_USER, db=db
     )
