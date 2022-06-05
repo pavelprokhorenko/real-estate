@@ -3,7 +3,7 @@ from typing import Generator
 import pytest
 import pytest_asyncio
 from databases import Database
-from fastapi.testclient import TestClient
+from httpx import AsyncClient
 
 from app.core.config import settings
 from app.fastapi_app import app
@@ -11,9 +11,10 @@ from tests.utils.user import authentication_token_from_email
 from tests.utils.utils import get_superuser_token_headers
 
 
-@pytest.fixture
-def api_client() -> TestClient:
-    return TestClient(app)
+@pytest_asyncio.fixture
+async def api_client() -> AsyncClient:
+    async with AsyncClient(app=app, base_url="http://0.0.0.0:8881/") as client:
+        yield client
 
 
 @pytest.fixture(autouse=True)
@@ -22,14 +23,14 @@ def reset_dependency_overrides() -> Generator:
     app.dependency_overrides = {}
 
 
-@pytest.fixture
-def superuser_token_headers(api_client: TestClient) -> dict[str, str]:
-    return get_superuser_token_headers(api_client)
+@pytest_asyncio.fixture
+async def superuser_token_headers(api_client: AsyncClient) -> dict[str, str]:
+    return await get_superuser_token_headers(api_client)
 
 
 @pytest_asyncio.fixture
 async def normal_user_token_headers(
-    api_client: TestClient, db: Database
+    api_client: AsyncClient, db: Database
 ) -> dict[str, str]:
     return await authentication_token_from_email(
         api_client=api_client, email=settings.EMAIL_TEST_USER, db=db

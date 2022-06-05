@@ -11,6 +11,7 @@ from alembic import command
 from alembic.config import Config
 from app.api.deps import get_db_pg
 from app.core.config import settings
+from app.db.init_db import init_db
 from app.db.metadata import postgres_metadata
 from app.fastapi_app import app
 from tests.common import PGSession
@@ -48,9 +49,10 @@ async def pg_db(setup_pg_database: Generator) -> Generator:
     db = Database(settings.TEST_POSTGRES_URL)
     try:
         await db.connect()
+        await init_db(db=db)
         yield db
     finally:
-        db.force_rollback()
+        await db.disconnect()
         PGSession.remove()
 
 

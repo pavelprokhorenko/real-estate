@@ -1,7 +1,7 @@
 from typing import Any
 
 from databases import Database
-from fastapi.testclient import TestClient
+from httpx import AsyncClient
 
 from app import crud
 from app.core.config import settings
@@ -9,12 +9,14 @@ from app.schemas.user import UserIn, UserUpdate
 from tests.utils.utils import random_email, random_lower_string
 
 
-def user_authentication_headers(
-    *, api_client: TestClient, email: str, password: str
+async def user_authentication_headers(
+    *, api_client: AsyncClient, email: str, password: str
 ) -> dict[str, str]:
     data = dict(username=email, password=password)
 
-    response = api_client.post(f"{settings.API_V1_STR}/login/access-token", data=data)
+    response = await api_client.post(
+        f"{settings.API_V1_STR}/login/access-token", data=data
+    )
     resp_data = response.json()
     auth_token = resp_data["access_token"]
 
@@ -38,7 +40,7 @@ async def create_random_user(db: Database) -> Any:
 
 
 async def authentication_token_from_email(
-    *, api_client: TestClient, email: str, db: Database
+    *, api_client: AsyncClient, email: str, db: Database
 ) -> dict[str, str]:
     """
     Return a valid token for the user with given email.
