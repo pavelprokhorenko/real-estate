@@ -13,6 +13,7 @@
 # base
 SECRET_KEY=some-secret-key
 PROJECT_NAME='Some Project Name'
+SERVER_HOST=http://0.0.0.0:8881
 
 # databases
 POSTGRES_USER=postgres

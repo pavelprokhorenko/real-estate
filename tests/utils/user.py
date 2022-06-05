@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Dict
 
 from databases import Database
 from httpx import AsyncClient
@@ -11,7 +11,7 @@ from tests.utils.utils import random_email, random_lower_string
 
 async def user_authentication_headers(
     *, api_client: AsyncClient, email: str, password: str
-) -> dict[str, str]:
+) -> Dict[str, str]:
     data = dict(username=email, password=password)
 
     response = await api_client.post(
@@ -41,7 +41,7 @@ async def create_random_user(db: Database) -> Any:
 
 async def authentication_token_from_email(
     *, api_client: AsyncClient, email: str, db: Database
-) -> dict[str, str]:
+) -> Dict[str, str]:
     """
     Return a valid token for the user with given email.
     If the user doesn't exist it is created first.
