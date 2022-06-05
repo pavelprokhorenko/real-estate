@@ -27,7 +27,7 @@ SMTP_USER=some-email
 SMTP_PASSWORD=some-password
 
 # Auth
-FIRST_SUPERUSER=user@user.com
+FIRST_SUPERUSER_USERNAME=user@user.com
 FIRST_SUPERUSER_PASSWORD=password
 FIRST_SUPERUSER_FIRST_NAME='first name'
 FIRST_SUPERUSER_LAST_NAME='last name'

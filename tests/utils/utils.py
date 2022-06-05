@@ -42,7 +42,7 @@ def random_datetime() -> str:
 
 def get_superuser_token_headers(client: TestClient) -> dict[str, str]:
     login_data = {
-        "username": settings.FIRST_SUPERUSER,
+        "username": settings.FIRST_SUPERUSER_USERNAME,
         "password": settings.FIRST_SUPERUSER_PASSWORD,
     }
     resp = client.post(f"{settings.API_V1_STR}/login/access-token", data=login_data)

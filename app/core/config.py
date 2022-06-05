@@ -106,7 +106,7 @@ class Settings(BaseSettings):
             and values.get("EMAILS_FROM_EMAIL")
         )
 
-    FIRST_SUPERUSER: EmailStr
+    FIRST_SUPERUSER_USERNAME: EmailStr
     FIRST_SUPERUSER_PASSWORD: str
     FIRST_SUPERUSER_FIRST_NAME: str
     FIRST_SUPERUSER_LAST_NAME: str
