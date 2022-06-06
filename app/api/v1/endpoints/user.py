@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import Any, List, Optional
 
 from databases import Database
 from fastapi import (
@@ -11,6 +11,7 @@ from fastapi import (
     Query,
     status,
 )
+from pydantic import EmailStr
 
 from app import crud, schemas, utils
 from app.api.deps import (
@@ -167,29 +168,45 @@ async def delete_user(
     status_code=status.HTTP_201_CREATED,
     response_model=schemas.UserOut,
 )
-async def sign_up(
+async def open_sign_up(
     *,
-    user: schemas.UserIn = Body(...),
+    email: EmailStr = Body(...),
+    password: str = Body(...),
+    phone_number: Optional[str] = Body(default=None),
+    first_name: str = Body(...),
+    last_name: str = Body(...),
     background_tasks: BackgroundTasks,
     db: Database = Depends(get_db_pg),
 ) -> Any:
     """
-    Sing up an unauthorized user.
+    Create new user without the need to be logged in.
     """
     if not settings.USERS_OPEN_SIGN_UP:
         raise HTTPException(
             status_code=403,
             detail="Open user registration is forbidden on this server",
         )
-    db_user = await crud.user.get_by_email(db, email=user.email)
+
+    db_user = await crud.user.get_by_email(db, email=email)
     if db_user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="The user with this email already exists.",
         )
+
+    user_in = schemas.UserIn(
+        email=email,
+        password=password,
+        phone_number=phone_number,
+        first_name=first_name,
+        last_name=last_name,
+    )
+    user = await crud.user.create(db, obj_in=user_in)
+
     background_tasks.add_task(
         utils.send_new_account_email,
         email_to=user.email,
         fullname=crud.user.get_fullname(db_user=user),
     )
-    return await crud.user.create(db, obj_in=user)
+
+    return user
