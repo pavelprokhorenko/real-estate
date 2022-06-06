@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import Any, List, Optional
 
 from databases import Database
 from fastapi import (
@@ -172,7 +172,7 @@ async def open_sign_up(
     *,
     email: EmailStr = Body(...),
     password: str = Body(...),
-    phone_number: str | None = Body(None),
+    phone_number: Optional[str] = Body(default=None),
     first_name: str = Body(...),
     last_name: str = Body(...),
     background_tasks: BackgroundTasks,

@@ -172,3 +172,21 @@ async def test_retrieve_users(
     assert len(all_users) > 1
     for item in all_users:
         assert "email" in item
+
+
+async def test_open_sign_up(api_client: AsyncClient, pg_db: Database):
+    if settings.USERS_OPEN_SIGN_UP:
+        username = random_email()
+        password = random_lower_string()
+        data = {"email": username, "password": password}
+
+        response = await api_client.post(
+            f"{settings.API_V1_STR}/user/sign-up", json=data
+        )
+        assert 200 <= response.status_code < 300
+        created_user = response.json()
+        user = await crud.user.get_by_email(pg_db, email=username)
+        assert user
+        assert user.email == created_user["email"]
+        assert user.is_active is True
+        assert user.is_superuser is False
