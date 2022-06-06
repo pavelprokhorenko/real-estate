@@ -173,8 +173,8 @@ async def open_sign_up(
     email: EmailStr = Body(...),
     password: str = Body(...),
     phone_number: str | None = Body(None),
-    first_name: str | None = Body(None),
-    last_name: str | None = Body(None),
+    first_name: str = Body(...),
+    last_name: str = Body(...),
     background_tasks: BackgroundTasks,
     db: Database = Depends(get_db_pg),
 ) -> Any:
@@ -194,16 +194,14 @@ async def open_sign_up(
             detail="The user with this email already exists.",
         )
 
-    user = await crud.user.create(
-        db,
-        obj_in=schemas.UserIn(
-            email=email,
-            password=password,
-            phone_number=phone_number,
-            first_name=first_name,
-            last_name=last_name,
-        ),
+    user_in = schemas.UserIn(
+        email=email,
+        password=password,
+        phone_number=phone_number,
+        first_name=first_name,
+        last_name=last_name,
     )
+    user = await crud.user.create(db, obj_in=user_in)
 
     background_tasks.add_task(
         utils.send_new_account_email,
