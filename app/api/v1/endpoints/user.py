@@ -194,16 +194,14 @@ async def open_sign_up(
             detail="The user with this email already exists.",
         )
 
-    user = await crud.user.create(
-        db,
-        obj_in=schemas.UserIn(
-            email=email,
-            password=password,
-            phone_number=phone_number,
-            first_name=first_name,
-            last_name=last_name,
-        ),
+    user_in = schemas.UserIn(
+        email=email,
+        password=password,
+        phone_number=phone_number,
+        first_name=first_name,
+        last_name=last_name,
     )
+    user = await crud.user.create(db, obj_in=user_in)
 
     background_tasks.add_task(
         utils.send_new_account_email,
